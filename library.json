@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "umbrella_headers": ["CP/all.h", "CP/all.hpp"],
+  "modules": {
+    "types": {
+      "header": "include/CP/types.hpp",
+      "symbols": ["i32", "i64", "u32", "u64", "i128", "u128", "f32", "f64", "EPS", "inf"],
+      "depends": []
+    },
+    "basic": {
+      "header": "include/CP/basic.hpp",
+      "symbols": ["io"],
+      "depends": []
+    },
+    "fastio": {
+      "header": "include/CP/fastio.hpp",
+      "symbols": ["IOS"],
+      "depends": []
+    },
+    "math_base": {
+      "header": "include/CP/math/base.hpp",
+      "symbols": ["power", "Floor", "Ceil", "exgcd", "exgcdFunction", "excrt", "gauss"],
+      "depends": ["types"]
+    },
+    "modint": {
+      "header": "include/CP/math/modint.hpp",
+      "symbols": ["Z", "DynModInt", "Montgomery", "power"],
+      "depends": ["types"]
+    },
+    "modcomb": {
+      "header": "include/CP/math/modcomb.hpp",
+      "symbols": ["Comb", "comb"],
+      "depends": ["modint"]
+    },
+    "fft": {
+      "header": "include/CP/math/fft.hpp",
+      "symbols": ["Cp", "FFT"],
+      "depends": ["types"]
+    },
+    "poly": {
+      "header": "include/CP/math/poly.hpp",
+      "symbols": ["Poly", "dft", "idft", "primitiveRoot", "findPrimitiveRoot"],
+      "depends": ["modint"]
+    },
+    "dsu": {
+      "header": "include/CP/ds/dsu.hpp",
+      "symbols": ["DSU"],
+      "depends": []
+    },
+    "fenwick": {
+      "header": "include/CP/ds/fenwick.hpp",
+      "symbols": ["Fenwick"],
+      "depends": []
+    },
+    "lazysegmenttree": {
+      "header": "include/CP/ds/lazysegmenttree.hpp",
+      "symbols": ["LazySegmentTree"],
+      "depends": []
+    },
+    "sparsetable": {
+      "header": "include/CP/ds/sparsetable.hpp",
+      "symbols": ["SparseTable"],
+      "depends": []
+    },
+    "suffixarray": {
+      "header": "include/CP/string/suffixarray.hpp",
+      "symbols": ["SuffixArray"],
+      "depends": []
+    },
+    "maxflow": {
+      "header": "include/CP/flow/maxflow.hpp",
+      "symbols": ["MaxFlow"],
+      "depends": []
+    },
+    "mincostflow": {
+      "header": "include/CP/flow/mincostflow.hpp",
+      "symbols": ["MinCostFlow"],
+      "depends": []
+    },
+    "stoerwagner": {
+      "header": "include/CP/flow/stoerwagner.hpp",
+      "symbols": ["StoerWagner"],
+      "depends": ["types"]
+    },
+    "gomoryhutree": {
+      "header": "include/CP/flow/gomoryhutree.hpp",
+      "symbols": ["GomoryHuTree"],
+      "depends": ["maxflow"]
+    },
+    "twosat": {
+      "header": "include/CP/graph/twosat.hpp",
+      "symbols": ["TwoSat"],
+      "depends": []
+    },
+    "bipartite": {
+      "header": "include/CP/graph/bipartite.hpp",
+      "symbols": ["HopcroftKarp", "KM"],
+      "depends": ["types"]
+    },
+    "hungarian": {
+      "header": "include/CP/graph/hungarian.hpp",
+      "symbols": ["Hungarian"],
+      "depends": []
+    },
+    "scc": {
+      "header": "include/CP/graph/scc.hpp",
+      "symbols": ["SCC"],
+      "depends": []
+    },
+    "ecc": {
+      "header": "include/CP/graph/ecc.hpp",
+      "symbols": ["ECC"],
+      "depends": []
+    },
+    "vcc": {
+      "header": "include/CP/graph/vcc.hpp",
+      "symbols": ["VCC"],
+      "depends": []
+    },
+    "blockcuttree": {
+      "header": "include/CP/graph/blockcuttree.hpp",
+      "symbols": ["BlockCutTree"],
+      "depends": []
+    },
+    "segtgraph": {
+      "header": "include/CP/graph/segtgraph.hpp",
+      "symbols": ["SegtGraph"],
+      "depends": ["types"]
+    },
+    "geometry_base": {
+      "header": "include/CP/geometry/base.hpp",
+      "symbols": ["PI", "Equal", "Sign", "Frac", "Fi", "QuadraticRoots"],
+      "depends": ["types"]
+    },
+    "geometry_point": {
+      "header": "include/CP/geometry/point.hpp",
+      "symbols": ["Point", "Pi", "Pd", "Dot", "Cross", "Distance", "Ex_Distance", "Manhattan_Distance", "Standardize", "ToDeg", "ToArc", "CosinesRule", "VectorAngle", "Rotate", "Rotate90"],
+      "depends": ["geometry_base"]
+    },
+    "geometry_line": {
+      "header": "include/CP/geometry/line.hpp",
+      "symbols": ["Line", "Li", "Ld", "Online", "Left", "SameSide", "DifferentSide", "Parallel", "Vertical", "LineIntersection", "Project", "Onsegment", "PointToSegment", "Median", "SegmentIntersection", "SegmentIntersect", "Slope", "FracSlope", "GeneralLine"],
+      "depends": ["geometry_point"]
+    },
+    "geometry_circle": {
+      "header": "include/CP/geometry/circle.hpp",
+      "symbols": ["Circle", "Ci", "Cd", "CircumferencePoint", "PointToCircle", "LineCircleIntersection", "SegmentCircleIntersection", "CircleCircleIntersection", "CircleIntersectionArea", "CircleFromThreePoints", "PointCircleTangents", "CommonTangents"],
+      "depends": ["geometry_line"]
+    },
+    "geometry_polygon": {
+      "header": "include/CP/geometry/polygon.hpp",
+      "symbols": ["Convex", "Diameter", "TriangleArea", "PolygonArea", "Circumcenter", "Incenter", "Centroid", "RectangleType", "PointInPolygon", "SegmentInPolygon", "BoundaryLatticePoints", "InteriorLatticePoints", "PointInConvex", "MinkowskiSum"],
+      "depends": ["geometry_circle"]
+    },
+    "geometry_halfplane": {
+      "header": "include/CP/geometry/halfplane.hpp",
+      "symbols": ["InHalfPlane", "HalfPlaneIntersection"],
+      "depends": ["geometry_line"]
+    }
+  }
+}
