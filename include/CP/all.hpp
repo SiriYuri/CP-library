@@ -23,6 +23,7 @@
 #include "CP/graph/scc.hpp"
 #include "CP/graph/ecc.hpp"
 #include "CP/graph/vcc.hpp"
+#include "CP/graph/blossomtree.hpp"
 #include "CP/graph/blockcuttree.hpp"
 #include "CP/graph/segtgraph.hpp"
 #include "CP/geometry/base.hpp"

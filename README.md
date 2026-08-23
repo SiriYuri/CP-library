@@ -1037,6 +1037,38 @@ int get(int position) const;
 
 `get(position)` 返回原点在优化图中的实际节点编号。`edge` 是构造后图的带权邻接表，可以直接交给 Dijkstra 等算法。每次点到区间或区间到点连边增加 `O(log n)` 条边。
 
+### 9.10 BlossomTree
+
+头文件：`CP/graph/blossomtree.hpp`
+
+一般图最大权匹配：
+
+```cpp
+BlossomTree<i64> blossom(n + 1);
+
+std::vector<std::tuple<int, int, i64>> edges;
+edges.emplace_back(u, v, weight);
+
+auto [maximumWeight, match] = blossom.work(edges);
+```
+
+公开接口：
+
+```cpp
+template <typename T = i64>
+struct BlossomTree;
+
+explicit BlossomTree(int _n);
+
+std::pair<T, std::vector<int>> work(
+    const std::vector<std::tuple<int, int, T>> &edges
+);
+```
+
+点编号为 `1..n`，构造时传 `n + 1`。`match[u]` 是与 `u` 匹配的点，未匹配时为 `0`。允许重边，同一对端点只保留最大权值；非正权边不会进入最终匹配。算法允许点不匹配，返回所有匹配中的最大总权值，复杂度为 `O(n^3)`，空间复杂度为 `O(n^2)`。
+
+`T` 应使用带符号整数类型。算法依赖精确的相等判断和除以 `2`，不适合直接使用浮点数。
+
 ## 10. 平面几何
 
 几何模块使用全局函数和类型，不放在命名空间内。
@@ -1445,6 +1477,7 @@ for (int position : suffixArray.sa) {
 | `scc` | `SCC` |
 | `ecc` | `ECC` |
 | `vcc` | `VCC` |
+| `blossomtree` | `BlossomTree` |
 | `blockcuttree` | `BlockCutTree` |
 | `segtgraph` | `SegtGraph` |
 | `geometry_base` | `PI`, `EPS`, `Equal`, `Sign`, `Frac`, `QuadraticRoots` |
