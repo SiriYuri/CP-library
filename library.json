@@ -42,6 +42,11 @@
       "symbols": ["Poly", "dft", "idft", "primitiveRoot", "findPrimitiveRoot"],
       "depends": ["modint"]
     },
+    "matrix": {
+      "header": "include/CP/math/matrix.hpp",
+      "symbols": ["Matrix"],
+      "depends": ["types"]
+    },
     "dsu": {
       "header": "include/CP/ds/dsu.hpp",
       "symbols": ["DSU"],

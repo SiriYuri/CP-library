@@ -305,11 +305,14 @@ i64 power(i64 base, i64 exp, i64 mod);
 整数向下和向上取整：
 
 ```cpp
-i64 Floor(i64 a, i64 b);
-i64 Ceil(i64 a, i64 b);
+template <typename T, typename U>
+constexpr auto Floor(T a, U b);
+
+template <typename T, typename U>
+constexpr auto Ceil(T a, U b);
 ```
 
-返回实数 `a / b` 的向下或向上取整，要求 `b > 0`。
+返回实数 `a / b` 的向下或向上取整，支持 `i64`、`i128` 以及二者混用，分子和分母均可为正数或负数，要求 `b != 0`。返回类型由两个参数的除法结果类型决定。
 
 扩展欧几里得：
 
@@ -580,6 +583,21 @@ Z binom(int n, int m);
 构造参数和 `init` 参数表示预处理到的最大值，不使用 `n + 1` 约定。查询会按需扩充缓存，但最多预处理到 `Z::mod() - 1`。要求当前模数为质数。`binom` 在 `n < m`、`m < 0` 或 `n >= Z::mod()` 时返回 `0`。
 
 如果调用 `Z::setMod` 改变模数，原缓存立即失效，继续查询前必须调用 `reset()`。
+
+### 6.6 Matrix
+
+头文件：`CP/math/matrix.hpp`
+
+```cpp
+Matrix<> matrix(n);
+matrix[i][j] = value;
+
+Matrix<i64> sum = a + b;
+Matrix<i64> product = a * b;
+Matrix<i64> result = Matrix<i64>::Pow(matrix, exponent);
+```
+
+当前模板维护 `n × n` 方阵，行列均使用 `0..n-1`，构造参数就是矩阵阶数，不使用 `n + 1` 约定。支持 `[]`、`+`、`*`、`+=`、`*=` 和非负整数快速幂。矩阵乘法复杂度为 `O(n^3)`。
 
 ## 7. 数据结构
 
@@ -1462,6 +1480,7 @@ for (int position : suffixArray.sa) {
 | `modcomb` | `Comb`, `comb` |
 | `fft` | `Cp`, `FFT` |
 | `poly` | `Poly`, `dft`, `idft`, `primitiveRoot` |
+| `matrix` | `Matrix` |
 | `dsu` | `DSU` |
 | `fenwick` | `Fenwick` |
 | `lazysegmenttree` | `LazySegmentTree` |

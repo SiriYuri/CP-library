@@ -8,6 +8,7 @@
 #include "CP/math/modcomb.hpp"
 #include "CP/math/fft.hpp"
 #include "CP/math/poly.hpp"
+#include "CP/math/matrix.hpp"
 #include "CP/ds/dsu.hpp"
 #include "CP/ds/fenwick.hpp"
 #include "CP/ds/lazysegmenttree.hpp"

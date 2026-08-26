@@ -20,14 +20,18 @@ inline i64 power(i64 x, i64 exp, i64 mod) {
     return ans;
 }
 
-inline i64 Floor(i64 a, i64 b) {
-    i64 quotient = a / b, remainder = a % b;
-    return quotient - (remainder < 0);
+template <typename T, typename U>
+constexpr auto Floor(T a, U b) {
+    using R = decltype(a / b);
+    R quotient = a / b, remainder = a % b;
+    return quotient - (remainder != 0 && (remainder < 0) != (b < 0));
 }
 
-inline i64 Ceil(i64 a, i64 b) {
-    i64 quotient = a / b, remainder = a % b;
-    return quotient + (remainder > 0);
+template <typename T, typename U>
+constexpr auto Ceil(T a, U b) {
+    using R = decltype(a / b);
+    R quotient = a / b, remainder = a % b;
+    return quotient + (remainder != 0 && (remainder < 0) == (b < 0));
 }
 
 inline i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
