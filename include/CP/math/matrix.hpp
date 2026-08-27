@@ -3,6 +3,8 @@
 #include "CP/types.hpp"
 
 #include <cassert>
+#include <optional>
+#include <utility>
 #include <vector>
 
 template <typename T = i64>
@@ -39,7 +41,34 @@ struct Matrix {
         return result;
     }
 
-    static Matrix Pow(Matrix base, i64 exponent) {
+    std::optional<Matrix> inv() const {
+        Matrix lhs = *this;
+        Matrix rhs(n);
+        for (int i = 0; i < n; i++) rhs[i][i] = T(1);
+        for (int col = 0; col < n; col++) {
+            int pivot = col;
+            while (pivot < n && lhs[pivot][col] == T()) pivot++;
+            if (pivot == n) return std::nullopt;
+            std::swap(lhs[pivot], lhs[col]);
+            std::swap(rhs[pivot], rhs[col]);
+            T inverse = T(1) / lhs[col][col];
+            for (int j = 0; j < n; j++) {
+                lhs[col][j] *= inverse;
+                rhs[col][j] *= inverse;
+            }
+            for (int i = 0; i < n; i++) {
+                if (i == col || lhs[i][col] == T()) continue;
+                T factor = lhs[i][col];
+                for (int j = 0; j < n; j++) {
+                    lhs[i][j] -= factor * lhs[col][j];
+                    rhs[i][j] -= factor * rhs[col][j];
+                }
+            }
+        }
+        return rhs;
+    }
+
+    static Matrix Power(Matrix base, i64 exponent) {
         Matrix result(base.n);
         for (int i = 0; i < base.n; i++) result[i][i] = T(1);
         for (; exponent > 0; exponent >>= 1, base *= base) {

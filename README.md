@@ -613,10 +613,23 @@ matrix[i][j] = value;
 
 Matrix<i64> sum = a + b;
 Matrix<i64> product = a * b;
-Matrix<i64> result = Matrix<i64>::Pow(matrix, exponent);
+Matrix<i64> result = Matrix<i64>::Power(matrix, exponent);
 ```
 
-当前模板维护 `n × n` 方阵，行列均使用 `0..n-1`，构造参数就是矩阵阶数，不使用 `n + 1` 约定。支持 `[]`、`+`、`*`、`+=`、`*=` 和非负整数快速幂。矩阵乘法复杂度为 `O(n^3)`。
+模意义下求逆：
+
+```cpp
+Matrix<Z> matrix(n);
+auto inverse = matrix.inv();
+
+if (inverse) {
+    Matrix<Z> identity = matrix * *inverse;
+}
+```
+
+`inv()` 使用 Gauss--Jordan 消元，可逆时返回逆矩阵，奇异矩阵返回 `std::nullopt`。元素类型必须支持四则运算并构成域；用于模意义时要求模数为质数。
+
+当前模板维护 `n × n` 方阵，行列均使用 `0..n-1`，构造参数就是矩阵阶数，不使用 `n + 1` 约定。支持 `[]`、`+`、`*`、`+=`、`*=`、非负整数快速幂和逆矩阵。矩阵乘法和求逆复杂度均为 `O(n^3)`。
 
 ## 7. 数据结构
 
@@ -802,6 +815,49 @@ int maximum = table.query(l, r);
 ```
 
 预处理复杂度 `O(n log n)`，查询复杂度 `O(1)`。
+
+### 7.5 DynHeap
+
+头文件：`CP/ds/dynheap.hpp`
+
+```cpp
+DynHeap<T, Compare> heap(maximumInsertCount + 1);
+```
+
+左偏树实现的可并堆。默认 `Compare = std::less<T>`，即小根堆；使用 `std::greater<T>` 时为大根堆。每次 `insert` 创建一个独立的单元素堆并返回永久编号，容量按整个程序的 `insert` 总次数确定，删除不会复用编号。
+
+公开接口：
+
+```cpp
+int insert(const T &value);
+bool merge(int x, int y);
+std::optional<std::pair<T, int>> top(int x);
+std::optional<std::pair<T, int>> pop(int x);
+bool erased(int x) const;
+int size(int x);
+```
+
+`x` 和 `y` 是插入时返回的元素编号。`merge(x,y)` 合并两个编号当前所在的堆；如果任一编号已删除或已经属于同一个堆，则返回 `false`。`top/pop` 返回 `(极值, 编号)`；传入编号已删除时返回 `std::nullopt`。数值相同时优先选择编号更小的元素。
+
+```cpp
+DynHeap<int> heap(n + 1);
+
+for (int i = 1; i <= n; i++) {
+    int value;
+    std::cin >> value;
+    heap.insert(value);
+}
+
+heap.merge(x, y);
+
+if (auto result = heap.pop(x)) {
+    std::cout << result->first << '\n';
+} else {
+    std::cout << -1 << '\n';
+}
+```
+
+`insert` 为 `O(1)`，`merge` 和 `pop` 为 `O(log n)`，`top`、`size` 的并查集查找均摊接近 `O(1)`。
 
 ## 8. 网络流与割
 
@@ -1502,6 +1558,7 @@ for (int position : suffixArray.sa) {
 | `poly` | `Poly`, `dft`, `idft`, `primitiveRoot` |
 | `matrix` | `Matrix` |
 | `dsu` | `DSU` |
+| `dynheap` | `DynHeap` |
 | `fenwick` | `Fenwick` |
 | `lazysegmenttree` | `LazySegmentTree` |
 | `sparsetable` | `SparseTable` |

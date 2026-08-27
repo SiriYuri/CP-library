@@ -57,6 +57,11 @@
       "symbols": ["DSU"],
       "depends": []
     },
+    "dynheap": {
+      "header": "include/CP/ds/dynheap.hpp",
+      "symbols": ["DynHeap"],
+      "depends": []
+    },
     "fenwick": {
       "header": "include/CP/ds/fenwick.hpp",
       "symbols": ["Fenwick"],

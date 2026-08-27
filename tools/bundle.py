@@ -20,6 +20,8 @@ REQUIRE_RE = re.compile(
     r"^[ \t]*//[ \t]*CP[ \t]*:[ \t]*require[ \t]+(?P<names>[^\r\n]+)",
     re.MULTILINE | re.IGNORECASE,
 )
+RAW_LITERAL_RE = re.compile(r'(?:u8|u|U|L)?R"([^ ()\\\t\r\n]{0,16})\(')
+QUOTED_LITERAL_RE = re.compile(r'(?:u8|u|U|L)?(["\'])')
 
 
 class BundleError(RuntimeError):
@@ -67,18 +69,27 @@ def mask_non_code(source: str) -> str:
             erase(i, end)
             i = end
             continue
-        raw = re.match(r'(?:u8|u|U|L)?R"([^ ()\\\t\r\n]{0,16})\(', source[i:])
+        raw = RAW_LITERAL_RE.match(source, i)
         if raw:
             terminator = ")" + raw.group(1) + '"'
-            closing = source.find(terminator, i + raw.end())
+            closing = source.find(terminator, raw.end())
             end = n if closing == -1 else closing + len(terminator)
             erase(i, end)
             i = end
             continue
-        quoted = re.match(r'(?:u8|u|U|L)?(["\'])', source[i:])
+        if (
+            source[i] == "'"
+            and i > 0
+            and i + 1 < n
+            and source[i - 1].isalnum()
+            and source[i + 1].isalnum()
+        ):
+            i += 1
+            continue
+        quoted = QUOTED_LITERAL_RE.match(source, i)
         if quoted:
             quote = quoted.group(1)
-            cursor = i + quoted.end()
+            cursor = quoted.end()
             while cursor < n:
                 if source[cursor] == "\\":
                     cursor += 2
