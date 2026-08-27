@@ -26,16 +26,16 @@ private:
         build(p << 1 | 1, mid + 1, r);
     }
 
-    void link(bool reverse, int p, int l, int r, int x, int y, int position, i64 weight) {
-        if (x > r || y < l) return;
+    void link(bool rev, int p, int l, int r, int x, int y, int pos, i64 wgt) {
+        if (x > r || y < l) { return; }
         if (x <= l && r <= y) {
-            if (!reverse) edge[position].emplace_back(p, weight);
-            else edge[p + shift].emplace_back(position, weight);
+            if (!rev) { edge[pos].emplace_back(p, wgt); }
+            else edge[p + shift].emplace_back(pos, wgt);
             return;
         }
         int mid = (l + r) >> 1;
-        link(reverse, p << 1, l, mid, x, y, position, weight);
-        link(reverse, p << 1 | 1, mid + 1, r, x, y, position, weight);
+        link(rev, p << 1, l, mid, x, y, pos, wgt);
+        link(rev, p << 1 | 1, mid + 1, r, x, y, pos, wgt);
     }
 
 public:
@@ -48,11 +48,11 @@ public:
         }
     }
 
-    void addPointToPoint(int u, int v, i64 weight = 1) { edge[leaf[u]].emplace_back(leaf[v], weight); }
+    void addPointToPoint(int u, int v, i64 wgt = 1) { edge[leaf[u]].emplace_back(leaf[v], wgt); }
 
-    void addPointToSeg(int u, int l, int r, i64 weight = 1) { link(false, 1, 1, n, l, r, leaf[u], weight); }
+    void addPointToSeg(int u, int l, int r, i64 wgt = 1) { link(false, 1, 1, n, l, r, leaf[u], wgt); }
 
-    void addSegToPoint(int l, int r, int v, i64 weight = 1) { link(true, 1, 1, n, l, r, leaf[v], weight); }
+    void addSegToPoint(int l, int r, int v, i64 wgt = 1) { link(true, 1, 1, n, l, r, leaf[v], wgt); }
 
     int get(int p) const { return leaf[p]; }
 };

@@ -6,7 +6,7 @@ template <class T>
 struct Fenwick {
     int n;
     std::vector<T> tree;
-    
+
     explicit Fenwick(int _n) : n(_n - 1), tree(_n) {}
 
     void add(int x, T w) { for (int i = x; i <= n; i += i & -i) tree[i] += w; }

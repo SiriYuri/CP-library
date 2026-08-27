@@ -27,7 +27,7 @@ struct SuffixArray {
             tmp.clear();
             for (int i = 0; i < k; i++) tmp.push_back(n - k + i);
             for (int i : sa) {
-                if (i >= k) tmp.push_back(i - k);
+                if (i >= k) { tmp.push_back(i - k); }
             }
             std::fill(cnt.begin(), cnt.end(), 0);
             for (int i = 0; i < n; i++) cnt[rk[i]]++;

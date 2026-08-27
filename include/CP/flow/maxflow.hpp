@@ -51,7 +51,7 @@ struct MaxFlow {
                 auto [v, cap] = e[i];
                 if (cap > 0 && h[v] == -1) {
                     h[v] = h[u] + 1;
-                    if (v == t) return true;
+                    if (v == t) { return true; }
                     que.push(v);
                 }
             }
@@ -60,7 +60,7 @@ struct MaxFlow {
     }
 
     T dfs(int u, int t, T flow) {
-        if (u == t) return flow;
+        if (u == t) { return flow; }
         T rest = flow;
         for (int &i = cur[u]; i < int(g[u].size()); ++i) {
             int j = g[u][i];
@@ -73,7 +73,7 @@ struct MaxFlow {
                     e[j].cap -= aug;
                     e[j ^ 1].cap += aug;
                     rest -= aug;
-                    if (rest == 0) return flow;
+                    if (rest == 0) { return flow; }
                 }
             }
         }
@@ -102,7 +102,7 @@ struct MaxFlow {
         T flow;
     };
 
-    std::vector<Edge> edges() const {
+    std::vector<Edge> eds() const {
         std::vector<Edge> ans;
         for (int i = 0; i < int(e.size()); i += 2) {
             ans.push_back({e[i + 1].to, e[i].to, e[i].cap + e[i + 1].cap, e[i + 1].cap});

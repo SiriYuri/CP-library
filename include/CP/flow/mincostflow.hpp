@@ -53,7 +53,7 @@ struct MinCostFlow {
         while (!que.empty()) {
             auto [d, u] = que.top();
             que.pop();
-            if (dis[u] != d) continue;
+            if (dis[u] != d) { continue; }
             for (int i : g[u]) {
                 int v = e[i].to;
                 T cap = e[i].cap;
@@ -69,12 +69,12 @@ struct MinCostFlow {
     }
 
     std::pair<T, T> flow(int s, int t) {
-        T maxFlow = 0;
-        T minCost = 0;
+        T maxf = 0;
+        T minc = 0;
         h.assign(n + 1, 0);
         while (dijkstra(s, t)) {
             for (int i = 1; i <= n; ++i) {
-                if (dis[i] != std::numeric_limits<T>::max()) h[i] += dis[i];
+                if (dis[i] != std::numeric_limits<T>::max()) { h[i] += dis[i]; }
             }
             T aug = std::numeric_limits<T>::max();
             for (int i = t; i != s; i = e[pre[i] ^ 1].to) aug = std::min(aug, e[pre[i]].cap);
@@ -82,10 +82,10 @@ struct MinCostFlow {
                 e[pre[i]].cap -= aug;
                 e[pre[i] ^ 1].cap += aug;
             }
-            maxFlow += aug;
-            minCost += aug * h[t];
+            maxf += aug;
+            minc += aug * h[t];
         }
-        return {maxFlow, minCost};
+        return {maxf, minc};
     }
 
     struct Edge {
@@ -96,7 +96,7 @@ struct MinCostFlow {
         T flow;
     };
 
-    std::vector<Edge> edges() const {
+    std::vector<Edge> eds() const {
         std::vector<Edge> ans;
         for (int i = 0; i < int(e.size()); i += 2) {
             ans.push_back({e[i + 1].to, e[i].to, e[i].cap + e[i + 1].cap, e[i].cost, e[i + 1].cap});

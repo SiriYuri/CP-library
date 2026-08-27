@@ -18,13 +18,28 @@
       "depends": []
     },
     "math_base": {
-      "header": "include/CP/math/base.hpp",
-      "symbols": ["power", "Floor", "Ceil", "exgcd", "exgcdFunction", "excrt", "gauss"],
+      "header": "include/CP/math/mathbase.hpp",
+      "symbols": ["power", "floor", "ceil"],
       "depends": ["types"]
+    },
+    "number_theory": {
+      "header": "include/CP/math/numbertheory.hpp",
+      "symbols": ["exgcd", "exgcdFunction", "excrt"],
+      "depends": ["math_base"]
+    },
+    "gauss": {
+      "header": "include/CP/math/gauss.hpp",
+      "symbols": ["gauss"],
+      "depends": ["types"]
+    },
+    "bsgs": {
+      "header": "include/CP/math/bsgs.hpp",
+      "symbols": ["exbsgs"],
+      "depends": ["math_base"]
     },
     "prime": {
       "header": "include/CP/math/prime.hpp",
-      "symbols": ["MillerRabin", "PollardRho", "factorize"],
+      "symbols": ["millerRabin", "pollardRho", "factorize"],
       "depends": ["types"]
     },
     "modint": {
@@ -39,12 +54,12 @@
     },
     "fft": {
       "header": "include/CP/math/fft.hpp",
-      "symbols": ["Cp", "FFT"],
+      "symbols": ["Cp", "fft"],
       "depends": ["types"]
     },
     "poly": {
       "header": "include/CP/math/poly.hpp",
-      "symbols": ["Poly", "dft", "idft", "primitiveRoot", "findPrimitiveRoot"],
+      "symbols": ["Poly", "dft", "idft", "proot", "findPrimitiveRoot"],
       "depends": ["modint"]
     },
     "matrix": {
@@ -149,32 +164,32 @@
     },
     "geometry_base": {
       "header": "include/CP/geometry/base.hpp",
-      "symbols": ["PI", "Equal", "Sign", "Frac", "Fi", "QuadraticRoots"],
+      "symbols": ["PI", "equal", "sign", "Frac", "Fi", "quadraticRoots"],
       "depends": ["types"]
     },
     "geometry_point": {
       "header": "include/CP/geometry/point.hpp",
-      "symbols": ["Point", "Pi", "Pd", "Dot", "Cross", "Distance", "Ex_Distance", "Manhattan_Distance", "Standardize", "ToDeg", "ToArc", "CosinesRule", "VectorAngle", "Rotate", "Rotate90"],
+      "symbols": ["Point", "Pi", "Pd", "dot", "cross", "distance", "squaredDistance", "manhattanDistance", "standardize", "toDeg", "toArc", "cosinesRule", "vectorAngle", "rotate", "rotate90"],
       "depends": ["geometry_base"]
     },
     "geometry_line": {
       "header": "include/CP/geometry/line.hpp",
-      "symbols": ["Line", "Li", "Ld", "Online", "Left", "SameSide", "DifferentSide", "Parallel", "Vertical", "LineIntersection", "Project", "Onsegment", "PointToSegment", "Median", "SegmentIntersection", "SegmentIntersect", "Slope", "FracSlope", "GeneralLine"],
+      "symbols": ["Line", "Li", "Ld", "onLine", "left", "sameSide", "differentSide", "parallel", "vertical", "lineIntersection", "project", "onSegment", "pointToSegment", "median", "segmentIntersection", "segmentIntersect", "slope", "fracSlope", "generalLine"],
       "depends": ["geometry_point"]
     },
     "geometry_circle": {
       "header": "include/CP/geometry/circle.hpp",
-      "symbols": ["Circle", "Ci", "Cd", "CircumferencePoint", "PointToCircle", "LineCircleIntersection", "SegmentCircleIntersection", "CircleCircleIntersection", "CircleIntersectionArea", "CircleFromThreePoints", "PointCircleTangents", "CommonTangents"],
+      "symbols": ["Circle", "Ci", "Cd", "circumferencePoint", "pointToCircle", "lineCircleIntersection", "segmentCircleIntersection", "circleCircleIntersection", "circleIntersectionArea", "circleFromThreePoints", "pointCircleTangents", "commonTangents"],
       "depends": ["geometry_line"]
     },
     "geometry_polygon": {
       "header": "include/CP/geometry/polygon.hpp",
-      "symbols": ["Convex", "Diameter", "TriangleArea", "PolygonArea", "Circumcenter", "Incenter", "Centroid", "RectangleType", "PointInPolygon", "SegmentInPolygon", "BoundaryLatticePoints", "InteriorLatticePoints", "PointInConvex", "MinkowskiSum"],
+      "symbols": ["convex", "diameter", "triangleArea", "polygonArea", "circumcenter", "incenter", "centroid", "rectangleType", "pointInPolygon", "segmentInPolygon", "boundaryLatticePoints", "interiorLatticePoints", "pointInConvex", "minkowskiSum"],
       "depends": ["geometry_circle"]
     },
     "geometry_halfplane": {
       "header": "include/CP/geometry/halfplane.hpp",
-      "symbols": ["InHalfPlane", "HalfPlaneIntersection"],
+      "symbols": ["inHalfPlane", "halfPlaneIntersection"],
       "depends": ["geometry_line"]
     }
   }

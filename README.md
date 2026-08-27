@@ -290,7 +290,7 @@ IOS::cout << x << IOS::endl;
 
 ### 6.1 Math Base
 
-头文件：`CP/math/base.hpp`
+头文件：`CP/math/mathbase.hpp`
 
 取模快速幂：
 
@@ -306,13 +306,17 @@ i64 power(i64 base, i64 exp, i64 mod);
 
 ```cpp
 template <typename T, typename U>
-constexpr auto Floor(T a, U b);
+constexpr auto floor(T a, U b);
 
 template <typename T, typename U>
-constexpr auto Ceil(T a, U b);
+constexpr auto ceil(T a, U b);
 ```
 
 返回实数 `a / b` 的向下或向上取整，支持 `i64`、`i128` 以及二者混用，分子和分母均可为正数或负数，要求 `b != 0`。返回类型由两个参数的除法结果类型决定。
+
+### 6.2 Number Theory
+
+头文件：`CP/math/numbertheory.hpp`
 
 扩展欧几里得：
 
@@ -345,6 +349,10 @@ i64 excrt(const std::vector<std::pair<i64, i64>> &equations);
 
 `equations` 使用 1-indexed，`equations[i] = {residue, modulus}` 表示 `x ≡ residue (mod modulus)`。有解时返回最小非负解，无解返回 `-1`；要求合并后的模数能放入 `i64`。
 
+### 6.3 Gauss
+
+头文件：`CP/math/gauss.hpp`
+
 高斯消元：
 
 ```cpp
@@ -362,17 +370,29 @@ auto gauss(std::vector<std::vector<T>> function);
 
 浮点判零使用全局常量 `EPS = 1e-8`。
 
-### 6.2 素数判定与整数分解
+### 6.4 BSGS
+
+头文件：`CP/math/bsgs.hpp`
+
+```cpp
+i64 exbsgs(i64 a, i64 b, i64 mod);
+```
+
+求满足 `a^x ≡ b (mod mod)` 的最小非负整数 `x`，无解返回 `-1`。允许 `a` 与 `mod` 不互质，支持负的 `a`、`b`，要求 `mod > 0`，时间和空间复杂度均为 `O(sqrt(mod))`。
+
+内部复用 `mathbase.hpp` 中的三参数 `power` 与 `ceil`，展开 `exbsgs` 时会自动带上 `math_base`。
+
+### 6.5 素数判定与整数分解
 
 头文件：`CP/math/prime.hpp`
 
 ```cpp
-bool MillerRabin(u64 n);
-u64 PollardRho(u64 n);
+bool millerRabin(u64 n);
+u64 pollardRho(u64 n);
 std::vector<u64> factorize(u64 n);
 ```
 
-`MillerRabin(n)` 对完整 `u64` 范围进行确定性素数判定。`PollardRho(n)` 对合数返回一个非平凡因子，对素数返回自身。`factorize(n)` 返回带重数且从小到大排列的全部质因子；`n <= 1` 时返回空数组。
+`millerRabin(n)` 对完整 `u64` 范围进行确定性素数判定。`pollardRho(n)` 对合数返回一个非平凡因子，对素数返回自身。`factorize(n)` 返回带重数且从小到大排列的全部质因子；`n <= 1` 时返回空数组。
 
 ```cpp
 auto factors = factorize(360);
@@ -381,7 +401,7 @@ auto factors = factorize(360);
 
 模乘使用 `u128`，Pollard--Rho 使用 Brent 循环与批量 `gcd`。
 
-### 6.3 Montgomery 模整数
+### 6.6 Montgomery 模整数
 
 头文件：`CP/math/modint.hpp`
 
@@ -414,8 +434,8 @@ struct Montgomery {
     explicit Montgomery(u32 modulus = 1);
     u32 reduce(u64 value) const;
     u32 mul(u32 a, u32 b) const;
-    u32 to_mont(u32 value) const;
-    u32 from_mont(u32 value) const;
+    u32 toMont(u32 val) const;
+    u32 fromMont(u32 val) const;
 };
 ```
 
@@ -469,7 +489,7 @@ M x = value;
 
 同一个 `DynModInt<P>` 类型共享模数状态。
 
-### 6.4 FFT
+### 6.7 fft
 
 头文件：`CP/math/fft.hpp`
 
@@ -486,7 +506,7 @@ struct Cp {
 变换接口：
 
 ```cpp
-void FFT(std::vector<Cp> &a, int flag);
+void fft(std::vector<Cp> &a, int flag);
 ```
 
 - `a.size()` 必须是 2 的幂。
@@ -501,7 +521,7 @@ std::vector<i64> mul(std::vector<Cp> &a, std::vector<Cp> &b);
 
 返回长度为 `a.size() + b.size() - 1` 的整数卷积。函数会扩充并修改 `a`、`b`。结果使用 `llround` 四舍五入，适用于卷积结果没有超出浮点精度范围的情况；大系数应拆系数或使用 NTT。
 
-### 6.5 多项式
+### 6.8 多项式
 
 头文件：`CP/math/poly.hpp`
 
@@ -563,7 +583,7 @@ std::vector<Z> eval(std::vector<Z> points) const;
 - `sqrt(size)` 当前要求常数项为 `1`，返回常数项为 `1` 的平方根。
 - `eval(points)` 返回多项式在各点的值。
 
-### 6.6 ModComb
+### 6.9 ModComb
 
 头文件：`CP/math/modcomb.hpp`
 
@@ -603,7 +623,7 @@ Z binom(int n, int m);
 
 如果调用 `Z::setMod` 改变模数，原缓存立即失效，继续查询前必须调用 `reset()`。
 
-### 6.7 Matrix
+### 6.10 Matrix
 
 头文件：`CP/math/matrix.hpp`
 
@@ -613,7 +633,7 @@ matrix[i][j] = value;
 
 Matrix<i64> sum = a + b;
 Matrix<i64> product = a * b;
-Matrix<i64> result = Matrix<i64>::Power(matrix, exponent);
+Matrix<i64> result = Matrix<i64>::power(matrix, exponent);
 ```
 
 模意义下求逆：
@@ -1170,7 +1190,7 @@ std::pair<T, std::vector<int>> work(
 
 - `Pi`、`Li`、`Ci` 使用 `i64`。
 - `Pd`、`Ld`、`Cd` 使用 `f64 = long double`。
-- 浮点判断使用 `EPS = 1e-8`、`Equal` 和 `Sign`。
+- 浮点判断使用 `EPS = 1e-8`、`equal` 和 `sign`。
 - `Point` 的排序与相等运算使用精确比较，不使用 `EPS`。
 - 整数点积、叉积和平方距离可能溢出，大坐标时使用更宽类型。
 - 没有特别说明时，多边形顶点不重复首点。
@@ -1190,13 +1210,13 @@ EPS
 
 ```cpp
 template <class T, class S>
-bool Equal(T x, S y);
+bool equal(T x, S y);
 
 template <class T>
-int Sign(T x);
+int sign(T x);
 ```
 
-`Sign(x)` 返回 `-1`、`0`、`1`。
+`sign(x)` 返回 `-1`、`0`、`1`。
 
 精确分数：
 
@@ -1217,7 +1237,7 @@ using Fi = Frac<i64>;
 方程求根：
 
 ```cpp
-std::tuple<int, f64, f64> QuadraticRoots(f64 a, f64 b, f64 c);
+std::tuple<int, f64, f64> quadraticRoots(f64 a, f64 b, f64 c);
 ```
 
 兼容一次方程。返回实根个数和两个根；一个实根时两个根值相同。
@@ -1254,11 +1274,11 @@ Point / scalar
 向量接口：
 
 ```cpp
-T Dot(Point<T> a, Point<T> b);
-T Dot(Point<T> p1, Point<T> p2, Point<T> p0);
+T dot(Point<T> a, Point<T> b);
+T dot(Point<T> p1, Point<T> p2, Point<T> p0);
 
-T Cross(Point<T> a, Point<T> b);
-T Cross(Point<T> p1, Point<T> p2, Point<T> p0);
+T cross(Point<T> a, Point<T> b);
+T cross(Point<T> p1, Point<T> p2, Point<T> p0);
 ```
 
 三点版本表示 `(p1 - p0)` 与 `(p2 - p0)` 的点积或叉积。
@@ -1266,27 +1286,27 @@ T Cross(Point<T> p1, Point<T> p2, Point<T> p0);
 距离与变换：
 
 ```cpp
-f64 Distance(T x1, T y1, T x2, T y2);
-f64 Distance(Point<T> a, Point<T> b);
+f64 distance(T x1, T y1, T x2, T y2);
+f64 distance(Point<T> a, Point<T> b);
 
-T Ex_Distance(T x1, T y1, T x2, T y2);
-T Ex_Distance(Point<T> a, Point<T> b);
+T squaredDistance(T x1, T y1, T x2, T y2);
+T squaredDistance(Point<T> a, Point<T> b);
 
-T Manhattan_Distance(Point<T> a, Point<T> b);
+T manhattanDistance(Point<T> a, Point<T> b);
 
-Pd Standardize(Pd vector);
-f64 ToDeg(f64 radians);
-f64 ToArc(f64 degrees);
-f64 CosinesRule(f64 a, f64 b, f64 c);
-f64 VectorAngle(Pd a, Pd b, bool absolute = true);
-Pd Rotate(Pd p, Pd center, f64 radians, bool clockwise = false);
-Point<T> Rotate90(Point<T> p, Point<T> center = { }, bool clockwise = false);
+Pd standardize(Pd vector);
+f64 toDeg(f64 radians);
+f64 toArc(f64 degrees);
+f64 cosinesRule(f64 a, f64 b, f64 c);
+f64 vectorAngle(Pd a, Pd b, bool absolute = true);
+Pd rotate(Pd p, Pd center, f64 radians, bool clockwise = false);
+Point<T> rotate90(Point<T> p, Point<T> center = { }, bool clockwise = false);
 ```
 
-- `Ex_Distance` 返回距离平方。
-- `Standardize` 要求非零向量。
-- `VectorAngle` 默认返回无符号夹角；`absolute=false` 时返回从 `a` 到 `b` 的有向角。
-- `Rotate` 默认逆时针旋转。
+- `squaredDistance` 返回距离平方。
+- `standardize` 要求非零向量。
+- `vectorAngle` 默认返回无符号夹角；`absolute=false` 时返回从 `a` 到 `b` 的有向角。
+- `rotate` 默认逆时针旋转。
 
 ### 10.3 Line 与线段
 
@@ -1305,38 +1325,38 @@ using Ld = Line<f64>;
 位置关系：
 
 ```cpp
-bool Online(Point<T> a, Point<T> b, Point<T> c);
-bool Online(Point<T> p, Line<T> line);
-bool Left(Point<T> p, Line<T> line);
-bool SameSide(Point<T> p1, Point<T> p2, Line<T> line);
-bool DifferentSide(Point<T> p1, Point<T> p2, Line<T> line);
-bool Parallel(Line<T> l1, Line<T> l2);
-bool Vertical(Line<T> l1, Line<T> l2);
+bool onLine(Point<T> a, Point<T> b, Point<T> c);
+bool onLine(Point<T> p, Line<T> line);
+bool left(Point<T> p, Line<T> line);
+bool sameSide(Point<T> p1, Point<T> p2, Line<T> line);
+bool differentSide(Point<T> p1, Point<T> p2, Line<T> line);
+bool parallel(Line<T> l1, Line<T> l2);
+bool vertical(Line<T> l1, Line<T> l2);
 ```
 
-`Online(a, b, c)` 判断 `a` 是否在直线 `bc` 上。`Left(p, line)` 的方向由 `line.a -> line.b` 决定。
+`onLine(a, b, c)` 判断 `a` 是否在直线 `bc` 上。`left(p, line)` 的方向由 `line.a -> line.b` 决定。
 
 直线与线段操作：
 
 ```cpp
-Pd LineIntersection(Ld l1, Ld l2);
-std::pair<Pd, f64> Project(Pd p, Ld line);
-bool Onsegment(Point<T> p, Line<T> segment, bool endPointIncluded = true);
-std::pair<Pd, f64> PointToSegment(Pd p, Ld segment);
-Ld Median(Ld segment);
-bool SegmentIntersect(Line<T> l1, Line<T> l2);
+Pd lineIntersection(Ld l1, Ld l2);
+std::pair<Pd, f64> project(Pd p, Ld line);
+bool onSegment(Point<T> p, Line<T> segment, bool endPointIncluded = true);
+std::pair<Pd, f64> pointToSegment(Pd p, Ld segment);
+Ld median(Ld segment);
+bool segmentIntersect(Line<T> l1, Line<T> l2);
 ```
 
-- `LineIntersection` 调用前必须确认两直线不平行。
-- `Project` 返回垂足和点到直线距离，直线不能退化为一点。
-- `PointToSegment` 返回线段上的最近点和距离。
-- `Median` 返回线段中垂线，线段不能退化为一点。
-- `SegmentIntersect` 判断两闭线段是否相交。
+- `lineIntersection` 调用前必须确认两直线不平行。
+- `project` 返回垂足和点到直线距离，直线不能退化为一点。
+- `pointToSegment` 返回线段上的最近点和距离。
+- `median` 返回线段中垂线，线段不能退化为一点。
+- `segmentIntersect` 判断两闭线段是否相交。
 
 带交点信息的线段相交：
 
 ```cpp
-std::tuple<int, Pd, Pd> SegmentIntersection(Ld l1, Ld l2);
+std::tuple<int, Pd, Pd> segmentIntersection(Ld l1, Ld l2);
 ```
 
 返回类型：
@@ -1351,14 +1371,14 @@ std::tuple<int, Pd, Pd> SegmentIntersection(Ld l1, Ld l2);
 直线表示转换：
 
 ```cpp
-f64 Slope(Ld line);
-Frac<T> FracSlope(Point<T> a, Point<T> b);
-std::array<T, 3> GeneralLine(Line<T> line);
-Ld GeneralLine(f64 A, f64 B, f64 C);
+f64 slope(Ld line);
+Frac<T> fracSlope(Point<T> a, Point<T> b);
+std::array<T, 3> generalLine(Line<T> line);
+Ld generalLine(f64 A, f64 B, f64 C);
 ```
 
-- `Slope` 要求非竖直直线。
-- `FracSlope` 用整数分数表示精确斜率，要求 `a.x != b.x`。
+- `slope` 要求非竖直直线。
+- `fracSlope` 用整数分数表示精确斜率，要求 `a.x != b.x`。
 - 数组版本返回 `A, B, C`，表示 `Ax + By = C`。
 - 浮点版本把 `Ax + By = C` 转换为两点式，要求 `A`、`B` 不同时为零。
 
@@ -1380,24 +1400,24 @@ using Cd = Circle<f64>;
 圆和点：
 
 ```cpp
-Pd CircumferencePoint(Cd circle, f64 radians);
-std::pair<Pd, f64> PointToCircle(Pd p, Cd circle);
-std::vector<Pd> PointCircleTangents(Pd p, Cd circle);
+Pd circumferencePoint(Cd circle, f64 radians);
+std::pair<Pd, f64> pointToCircle(Pd p, Cd circle);
+std::vector<Pd> pointCircleTangents(Pd p, Cd circle);
 ```
 
-- `CircumferencePoint` 返回圆上指定极角的点。
-- `PointToCircle` 返回圆周上的最近点和距离。
-- `PointCircleTangents` 返回点到圆的切点，圆内、圆上、圆外分别返回 `0/1/2` 个点。
+- `circumferencePoint` 返回圆上指定极角的点。
+- `pointToCircle` 返回圆周上的最近点和距离。
+- `pointCircleTangents` 返回点到圆的切点，圆内、圆上、圆外分别返回 `0/1/2` 个点。
 
 交点：
 
 ```cpp
-std::tuple<int, Pd, Pd> LineCircleIntersection(Ld line, Cd circle);
-std::tuple<int, Pd, Pd> SegmentCircleIntersection(Ld segment, Cd circle);
-std::tuple<int, Pd, Pd> CircleCircleIntersection(Cd c1, Cd c2);
+std::tuple<int, Pd, Pd> lineCircleIntersection(Ld line, Cd circle);
+std::tuple<int, Pd, Pd> segmentCircleIntersection(Ld segment, Cd circle);
+std::tuple<int, Pd, Pd> circleCircleIntersection(Cd c1, Cd c2);
 ```
 
-直线圆和线段圆返回 `0/1/2` 个交点。`LineCircleIntersection` 要求直线不退化。
+直线圆和线段圆返回 `0/1/2` 个交点。`lineCircleIntersection` 要求直线不退化。
 
 两圆相交返回：
 
@@ -1411,13 +1431,13 @@ std::tuple<int, Pd, Pd> CircleCircleIntersection(Cd c1, Cd c2);
 其他接口：
 
 ```cpp
-f64 CircleIntersectionArea(Cd c1, Cd c2);
-std::pair<bool, Cd> CircleFromThreePoints(Pd a, Pd b, Pd c);
-std::pair<int, std::vector<std::pair<Pd, Pd>>> CommonTangents(Cd c1, Cd c2);
+f64 circleIntersectionArea(Cd c1, Cd c2);
+std::pair<bool, Cd> circleFromThreePoints(Pd a, Pd b, Pd c);
+std::pair<int, std::vector<std::pair<Pd, Pd>>> commonTangents(Cd c1, Cd c2);
 ```
 
-- `CircleFromThreePoints` 在三点共线时返回 `{false, {}}`。
-- `CommonTangents` 返回公切线数量和每条切线在两个圆上的切点；重合圆返回数量 `-1`。
+- `circleFromThreePoints` 在三点共线时返回 `{false, {}}`。
+- `commonTangents` 返回公切线数量和每条切线在两个圆上的切点；重合圆返回数量 `-1`。
 - 圆相关函数默认半径非负。
 
 ### 10.5 Polygon
@@ -1427,54 +1447,54 @@ std::pair<int, std::vector<std::pair<Pd, Pd>>> CommonTangents(Cd c1, Cd c2);
 凸包：
 
 ```cpp
-std::vector<Point<T>> Convex(std::vector<Point<T>> points);
-T Diameter(const std::vector<Point<T>> &convex);
-int PointInConvex(Point<T> p, const std::vector<Point<T>> &convex);
-std::vector<Point<T>> MinkowskiSum(std::vector<Point<T>> a, std::vector<Point<T>> b);
+std::vector<Point<T>> convex(std::vector<Point<T>> points);
+T diameter(const std::vector<Point<T>> &convex);
+int pointInConvex(Point<T> p, const std::vector<Point<T>> &convex);
+std::vector<Point<T>> minkowskiSum(std::vector<Point<T>> a, std::vector<Point<T>> b);
 ```
 
-- `Convex` 返回逆时针严格凸包，去重并删除边上的共线中间点，不重复首点。
-- `Diameter` 返回凸包直径平方，输入应是逆时针凸包。
-- `PointInConvex` 要求逆时针严格凸包，返回 `0/1/2` 表示外部/边界/内部。
-- `MinkowskiSum` 会先对两个输入求严格凸包。
+- `convex` 返回逆时针严格凸包，去重并删除边上的共线中间点，不重复首点。
+- `diameter` 返回凸包直径平方，输入应是逆时针凸包。
+- `pointInConvex` 要求逆时针严格凸包，返回 `0/1/2` 表示外部/边界/内部。
+- `minkowskiSum` 会先对两个输入求严格凸包。
 
 面积和三角形中心：
 
 ```cpp
-f64 TriangleArea(Pd a, Pd b, Pd c);
-f64 PolygonArea(const std::vector<Point<T>> &polygon, bool absolute = true);
-std::pair<bool, Pd> Circumcenter(Pd a, Pd b, Pd c);
-Pd Incenter(Pd a, Pd b, Pd c);
-Point<T> Centroid(Point<T> a, Point<T> b, Point<T> c);
+f64 triangleArea(Pd a, Pd b, Pd c);
+f64 polygonArea(const std::vector<Point<T>> &polygon, bool absolute = true);
+std::pair<bool, Pd> circumcenter(Pd a, Pd b, Pd c);
+Pd incenter(Pd a, Pd b, Pd c);
+Point<T> centroid(Point<T> a, Point<T> b, Point<T> c);
 ```
 
-- `PolygonArea(..., false)` 返回有向面积，逆时针为正。
-- `Circumcenter` 在三点共线时返回 `false`。
-- `Incenter` 要求非退化三角形。
-- 整数类型的 `Centroid` 会发生除法截断。
+- `polygonArea(..., false)` 返回有向面积，逆时针为正。
+- `circumcenter` 在三点共线时返回 `false`。
+- `incenter` 要求非退化三角形。
+- 整数类型的 `centroid` 会发生除法截断。
 
 多边形包含关系：
 
 ```cpp
-int PointInPolygon(Point<T> p, const std::vector<Point<T>> &polygon);
-bool SegmentInPolygon(Ld segment, const std::vector<Pd> &polygon, bool boundaryIncluded = true);
+int pointInPolygon(Point<T> p, const std::vector<Point<T>> &polygon);
+bool segmentInPolygon(Ld segment, const std::vector<Pd> &polygon, bool boundaryIncluded = true);
 ```
 
-输入必须是简单多边形。`PointInPolygon` 返回 `0/1/2` 表示外部/边界/内部。
+输入必须是简单多边形。`pointInPolygon` 返回 `0/1/2` 表示外部/边界/内部。
 
 格点多边形：
 
 ```cpp
-i64 BoundaryLatticePoints(const std::vector<Pi> &polygon);
-i64 InteriorLatticePoints(const std::vector<Pi> &polygon);
+i64 boundaryLatticePoints(const std::vector<Pi> &polygon);
+i64 interiorLatticePoints(const std::vector<Pi> &polygon);
 ```
 
-`InteriorLatticePoints` 使用 Pick 定理。
+`interiorLatticePoints` 使用 Pick 定理。
 
 矩形判断：
 
 ```cpp
-int RectangleType(std::vector<Point<T>> points);
+int rectangleType(std::vector<Point<T>> points);
 ```
 
 只接受四个整数点，返回 `0/1/2` 表示其他图形/矩形/正方形。
@@ -1484,11 +1504,11 @@ int RectangleType(std::vector<Point<T>> points);
 头文件：`CP/geometry/halfplane.hpp`
 
 ```cpp
-bool InHalfPlane(Pd p, Ld line, bool boundaryIncluded = true);
-std::vector<Pd> HalfPlaneIntersection(std::vector<Ld> lines);
+bool inHalfPlane(Pd p, Ld line, bool boundaryIncluded = true);
+std::vector<Pd> halfPlaneIntersection(std::vector<Ld> lines);
 ```
 
-半平面由有向直线 `a -> b` 的左侧定义。每条直线的两个端点必须不同。`HalfPlaneIntersection` 返回有界交多边形；空集或无界交返回空数组。
+半平面由有向直线 `a -> b` 的左侧定义。每条直线的两个端点必须不同。`halfPlaneIntersection` 返回有界交多边形；空集或无界交返回空数组。
 
 单位正方形对应的四个半平面：
 
@@ -1500,7 +1520,7 @@ std::vector<Ld> lines = {
     {{0, 1}, {0, 0}}
 };
 
-std::vector<Pd> polygon = HalfPlaneIntersection(lines);
+std::vector<Pd> polygon = halfPlaneIntersection(lines);
 ```
 
 ## 11. 字符串
@@ -1550,12 +1570,15 @@ for (int position : suffixArray.sa) {
 | `types` | `i32`, `i64`, `i128`, `u32`, `u64`, `u128`, `f32`, `f64`, `EPS`, `inf` |
 | `basic` | `io` |
 | `fastio` | `IOS` |
-| `math_base` | `power`, `Floor`, `Ceil`, `exgcd`, `excrt`, `gauss` 等 |
-| `prime` | `MillerRabin`, `PollardRho`, `factorize` |
+| `math_base` | `power`, `floor`, `ceil` |
+| `number_theory` | `exgcd`, `exgcdFunction`, `excrt` |
+| `gauss` | `gauss` |
+| `bsgs` | `exbsgs` |
+| `prime` | `millerRabin`, `pollardRho`, `factorize` |
 | `modint` | `Z`, `DynModInt`, `Montgomery`, `power` |
 | `modcomb` | `Comb`, `comb` |
-| `fft` | `Cp`, `FFT` |
-| `poly` | `Poly`, `dft`, `idft`, `primitiveRoot` |
+| `fft` | `Cp`, `fft` |
+| `poly` | `Poly`, `dft`, `idft`, `proot` |
 | `matrix` | `Matrix` |
 | `dsu` | `DSU` |
 | `dynheap` | `DynHeap` |
@@ -1576,12 +1599,12 @@ for (int position : suffixArray.sa) {
 | `blossomtree` | `BlossomTree` |
 | `blockcuttree` | `BlockCutTree` |
 | `segtgraph` | `SegtGraph` |
-| `geometry_base` | `PI`, `EPS`, `Equal`, `Sign`, `Frac`, `QuadraticRoots` |
-| `geometry_point` | `Point`, `Pi`, `Pd`, `Dot`, `Cross`, `Distance`, `Rotate` 等 |
-| `geometry_line` | `Line`, `Li`, `Ld`, `LineIntersection`, `SegmentIntersection` 等 |
+| `geometry_base` | `PI`, `EPS`, `equal`, `sign`, `Frac`, `quadraticRoots` |
+| `geometry_point` | `Point`, `Pi`, `Pd`, `dot`, `cross`, `distance`, `rotate` 等 |
+| `geometry_line` | `Line`, `Li`, `Ld`, `lineIntersection`, `segmentIntersection` 等 |
 | `geometry_circle` | `Circle`, `Ci`, `Cd` 及圆相关函数 |
-| `geometry_polygon` | `Convex`, `PolygonArea`, `PointInPolygon`, `MinkowskiSum` 等 |
-| `geometry_halfplane` | `InHalfPlane`, `HalfPlaneIntersection` |
+| `geometry_polygon` | `convex`, `polygonArea`, `pointInPolygon`, `minkowskiSum` 等 |
+| `geometry_halfplane` | `inHalfPlane`, `halfPlaneIntersection` |
 
 完整列表可以随时通过以下命令查看：
 

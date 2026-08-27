@@ -12,68 +12,68 @@
 
 struct HopcroftKarp {
     int n, m;
-    std::vector<std::array<int, 2>> edges;
-    std::vector<int> matchl, matchr;
+    std::vector<std::array<int, 2>> eds;
+    std::vector<int> matl, matr;
 
-    HopcroftKarp(int _n, int _m) : n(_n - 1), m(_m - 1), matchl(n, -1), matchr(m, -1) {}
+    HopcroftKarp(int _n, int _m) : n(_n - 1), m(_m - 1), matl(n, -1), matr(m, -1) {}
 
-    void addEdge(int u, int v) { edges.push_back({u - 1, v - 1}); }
+    void addEdge(int u, int v) { eds.push_back({u - 1, v - 1}); }
 
     int work() {
-        std::vector<int> adjacency(edges.size());
+        std::vector<int> adj(eds.size());
         std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
-        std::shuffle(edges.begin(), edges.end(), rng);
+        std::shuffle(eds.begin(), eds.end(), rng);
         std::vector<int> head(n + 1);
-        for (auto [u, v] : edges) head[u]++;
+        for (auto [u, v] : eds) head[u]++;
         for (int i = 1; i <= n; i++) head[i] += head[i - 1];
-        for (auto [u, v] : edges) adjacency[--head[u]] = v;
-        int matching = 0;
-        std::vector<int> root, parent, queue(n);
+        for (auto [u, v] : eds) adj[--head[u]] = v;
+        int mtch = 0;
+        std::vector<int> root, par, que(n);
         while (true) {
             root.assign(n, -1);
-            parent.assign(n, -1);
+            par.assign(n, -1);
             int tail = 0;
             for (int i = 0; i < n; i++) {
-                if (matchl[i] == -1) {
-                    queue[tail++] = i;
-                    root[i] = parent[i] = i;
+                if (matl[i] == -1) {
+                    que[tail++] = i;
+                    root[i] = par[i] = i;
                 }
             }
             bool found = false;
             for (int i = 0; i < tail; i++) {
-                int u = queue[i];
-                if (matchl[root[u]] != -1) continue;
+                int u = que[i];
+                if (matl[root[u]] != -1) { continue; }
                 for (int j = head[u]; j < head[u + 1]; j++) {
-                    int v = adjacency[j];
-                    if (matchr[v] == -1) {
+                    int v = adj[j];
+                    if (matr[v] == -1) {
                         while (v != -1) {
-                            matchr[v] = u;
-                            std::swap(matchl[u], v);
-                            u = parent[u];
+                            matr[v] = u;
+                            std::swap(matl[u], v);
+                            u = par[u];
                         }
                         found = true;
-                        matching++;
+                        mtch++;
                         break;
                     }
-                    if (parent[matchr[v]] == -1) {
-                        int next = matchr[v];
-                        queue[tail++] = next;
-                        parent[next] = u;
+                    if (par[matr[v]] == -1) {
+                        int next = matr[v];
+                        que[tail++] = next;
+                        par[next] = u;
                         root[next] = root[u];
                     }
                 }
             }
-            if (!found) break;
+            if (!found) { break; }
         }
-        return matching;
+        return mtch;
     }
 
     std::vector<std::array<int, 2>> get() const {
-        std::vector<std::array<int, 2>> result;
+        std::vector<std::array<int, 2>> res;
         for (int i = 0; i < n; i++) {
-            if (matchl[i] != -1) result.push_back({i + 1, matchl[i] + 1});
+            if (matl[i] != -1) { res.push_back({i + 1, matl[i] + 1}); }
         }
-        return result;
+        return res;
     }
 };
 
@@ -82,20 +82,20 @@ struct KM {
     int n;
     std::vector<int> ansl, ansr, pre;
     std::vector<T> lx, ly;
-    std::vector<std::vector<T>> weight;
+    std::vector<std::vector<T>> wgt;
 
-    explicit KM(int _n) : n(_n - 1), ansl(_n, -1), ansr(_n, -1), pre(_n, -1), lx(_n, -inf<T>), ly(_n), weight(_n, std::vector<T>(_n, -inf<T>)) {}
+    explicit KM(int _n) : n(_n - 1), ansl(_n, -1), ansr(_n, -1), pre(_n, -1), lx(_n, -inf<T>), ly(_n), wgt(_n, std::vector<T>(_n, -inf<T>)) {}
 
-    void addEdge(int x, int y, T value) { weight[x][y] = std::max(weight[x][y], value); }
+    void addEdge(int x, int y, T val) { wgt[x][y] = std::max(wgt[x][y], val); }
 
     void bfs(int start) {
         std::vector<bool> visl(n + 1), visr(n + 1);
-        std::vector<T> slack(n + 1, inf<T>);
-        std::queue<int> queue;
+        std::vector<T> slk(n + 1, inf<T>);
+        std::queue<int> que;
         auto check = [&] (int x) -> bool {
             visr[x] = true;
             if (ansr[x] != -1) {
-                queue.push(ansr[x]);
+                que.push(ansr[x]);
                 visl[ansr[x]] = true;
                 return false;
             }
@@ -105,52 +105,53 @@ struct KM {
             }
             return true;
         };
-        queue.push(start);
+
+        que.push(start);
         visl[start] = true;
         while (true) {
-            while (!queue.empty()) {
-                int x = queue.front();
-                queue.pop();
+            while (!que.empty()) {
+                int x = que.front();
+                que.pop();
                 for (int y = 1; y <= n; y++) {
-                    if (visr[y]) continue;
-                    T delta = lx[x] + ly[y] - weight[x][y];
-                    if (delta < slack[y]) {
+                    if (visr[y]) { continue; }
+                    T dt = lx[x] + ly[y] - wgt[x][y];
+                    if (dt < slk[y]) {
                         pre[y] = x;
-                        slack[y] = delta;
-                        if (slack[y] == 0 && check(y)) return;
+                        slk[y] = dt;
+                        if (slk[y] == 0 && check(y)) { return; }
                     }
                 }
             }
-            T value = inf<T>;
+            T val = inf<T>;
             for (int i = 1; i <= n; i++) {
-                if (!visr[i]) value = std::min(value, slack[i]);
+                if (!visr[i]) { val = std::min(val, slk[i]); }
             }
             for (int i = 1; i <= n; i++) {
-                if (visl[i]) lx[i] -= value;
-                if (visr[i]) ly[i] += value;
-                else slack[i] -= value;
+                if (visl[i]) { lx[i] -= val; }
+                if (visr[i]) { ly[i] += val; }
+                else slk[i] -= val;
             }
             for (int i = 1; i <= n; i++) {
-                if (!visr[i] && slack[i] == 0 && check(i)) return;
+                if (!visr[i] && slk[i] == 0 && check(i)) { return; }
             }
         }
     }
 
     T work() {
         for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) lx[i] = std::max(lx[i], weight[i][j]);
+            for (int j = 1; j <= n; j++) lx[i] = std::max(lx[i], wgt[i][j]);
         }
         for (int i = 1; i <= n; i++) bfs(i);
-        T result = 0;
-        for (int i = 1; i <= n; i++) result += weight[ansr[i]][i];
-        return result;
+        T res = 0;
+        for (int i = 1; i <= n; i++) res += wgt[ansr[i]][i];
+        return res;
     }
 
     std::vector<std::pair<int, int>> get() const {
-        std::vector<std::pair<int, int>> result;
+        std::vector<std::pair<int, int>> res;
         for (int i = 1; i <= n; i++) {
-            if (ansr[i] != -1 && weight[ansr[i]][i] != -inf<T>) result.emplace_back(ansr[i], i);
+            if (ansr[i] != -1 && wgt[ansr[i]][i] != -inf<T>) { res.emplace_back(ansr[i], i); }
         }
-        return result;
+        return res;
     }
 };

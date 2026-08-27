@@ -12,7 +12,7 @@ template <class T>
 constexpr T power(T base, i64 exp) {
     T ans = 1;
     for (; exp > 0; exp >>= 1, base *= base) {
-        if (exp & 1) ans *= base;
+        if (exp & 1) { ans *= base; }
     }
     return ans;
 }
@@ -34,10 +34,10 @@ struct Montgomery {
         r2 = u32((r * r) % m_);
     }
 
-    constexpr u32 reduce(u64 value) const {
-        const u32 m_value = u32(value) * ninv;
-        const u64 reduced = value + u64(m_value) * m;
-        const u32 res = u32(reduced >> 32);
+    constexpr u32 reduce(u64 val) const {
+        const u32 mval = u32(val) * ninv;
+        const u64 red = val + u64(mval) * m;
+        const u32 res = u32(red >> 32);
         return res >= m ? res - m : res;
     }
 
@@ -45,11 +45,11 @@ struct Montgomery {
         return reduce(u64(a) * b);
     }
 
-    constexpr u32 to_mont(u32 a) const {
+    constexpr u32 toMont(u32 a) const {
         return reduce(u64(a) * r2);
     }
 
-    constexpr u32 from_mont(u32 a) const {
+    constexpr u32 fromMont(u32 a) const {
         return reduce(a);
     }
 };
@@ -61,22 +61,20 @@ private:
     static inline Montgomery mt{P > 0 ? P : 1};
 
 public:
-    static constexpr u32 default_mod = P;
+    static constexpr u32 mod0 = P;
 
     constexpr DynModInt() : x(0) {}
 
     template <std::integral T>
-    constexpr DynModInt(T value) {
-        i64 normalized = value % i64(mod());
-        if (normalized < 0) {
-            normalized += mod();
-        }
-        x = mt.to_mont(u32(normalized));
+    constexpr DynModInt(T val) {
+        i64 norm = val % i64(mod());
+        if (norm < 0) { norm += mod(); }
+        x = mt.toMont(u32(norm));
     }
 
-    static void setMod(u32 modulus) {
-        assert((modulus & 1U) && modulus < (1U << 31));
-        mt = Montgomery(modulus);
+    static void setMod(u32 mod) {
+        assert((mod & 1U) && mod < (1U << 31));
+        mt = Montgomery(mod);
     }
 
     static constexpr u32 mod() {
@@ -84,14 +82,12 @@ public:
     }
 
     constexpr u32 val() const {
-        return mt.from_mont(x);
+        return mt.fromMont(x);
     }
 
     constexpr DynModInt &operator+=(const DynModInt &rhs) & {
         x += rhs.x;
-        if (x >= mod()) {
-            x -= mod();
-        }
+        if (x >= mod()) { x -= mod(); }
         return *this;
     }
 
@@ -130,16 +126,16 @@ public:
     }
 
     constexpr DynModInt inv() const {
-        const u32 regular = mt.from_mont(x);
-        i64 a = regular;
+        const u32 reg = mt.fromMont(x);
+        i64 a = reg;
         i64 b = mod();
         i64 u = 1;
         i64 v = 0;
         while (b) {
-            const i64 quotient = a / b;
-            a -= quotient * b;
+            const i64 quo = a / b;
+            a -= quo * b;
             std::swap(a, b);
-            u -= quotient * v;
+            u -= quo * v;
             std::swap(u, v);
         }
         assert(a == 1);
@@ -174,15 +170,15 @@ public:
         return lhs /= rhs;
     }
 
-    friend std::istream &operator>>(std::istream &is, DynModInt &value) {
-        i64 input;
-        is >> input;
-        value = input;
+    friend std::istream &operator>>(std::istream &is, DynModInt &val) {
+        i64 in;
+        is >> in;
+        val = in;
         return is;
     }
 
-    friend std::ostream &operator<<(std::ostream &os, const DynModInt &value) {
-        return os << value.val();
+    friend std::ostream &operator<<(std::ostream &os, const DynModInt &val) {
+        return os << val.val();
     }
 };
 

@@ -16,10 +16,10 @@ struct TwoSat {
     }
 
     bool work() {
-        std::vector<int> id(2 * n + 2, -1), dfn(2 * n + 2, -1), low(2 * n + 2, -1), stack;
-        int now = 0, count = 0;
+        std::vector<int> id(2 * n + 2, -1), dfn(2 * n + 2, -1), low(2 * n + 2, -1), stk;
+        int now = 0, cnt = 0;
         auto tarjan = [&] (auto &&self, int u) -> void {
-            stack.emplace_back(u);
+            stk.emplace_back(u);
             dfn[u] = low[u] = now++;
             for (int v : edge[u]) {
                 if (dfn[v] == -1) {
@@ -32,18 +32,19 @@ struct TwoSat {
             if (dfn[u] == low[u]) {
                 int v;
                 do {
-                    v = stack.back();
-                    stack.pop_back();
-                    id[v] = count;
+                    v = stk.back();
+                    stk.pop_back();
+                    id[v] = cnt;
                 } while (v != u);
-                count++;
+                cnt++;
             }
         };
+
         for (int i = 2; i <= 2 * n + 1; i++) {
-            if (dfn[i] == -1) tarjan(tarjan, i);
+            if (dfn[i] == -1) { tarjan(tarjan, i); }
         }
         for (int i = 1; i <= n; i++) {
-            if (id[2 * i] == id[2 * i + 1]) return false;
+            if (id[2 * i] == id[2 * i + 1]) { return false; }
             ans[i] = id[2 * i] > id[2 * i + 1];
         }
         return true;

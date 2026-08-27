@@ -5,20 +5,20 @@
 
 struct Hungarian {
     int n, m, time;
-    std::vector<std::vector<int>> adjacency;
-    std::vector<int> matchl, matchr, visited;
+    std::vector<std::vector<int>> adj;
+    std::vector<int> matl, matr, vis;
 
-    Hungarian(int _n, int _m) : n(_n - 1), m(_m - 1), time(0), adjacency(_n), matchl(_n, -1), matchr(_m, -1), visited(_m) {}
+    Hungarian(int _n, int _m) : n(_n - 1), m(_m - 1), time(0), adj(_n), matl(_n, -1), matr(_m, -1), vis(_m) {}
 
-    void addEdge(int u, int v) { adjacency[u].emplace_back(v); }
+    void addEdge(int u, int v) { adj[u].emplace_back(v); }
 
     bool dfs(int u) {
-        for (int v : adjacency[u]) {
-            if (visited[v] == time) continue;
-            visited[v] = time;
-            if (matchr[v] == -1 || dfs(matchr[v])) {
-                matchr[v] = u;
-                matchl[u] = v;
+        for (int v : adj[u]) {
+            if (vis[v] == time) { continue; }
+            vis[v] = time;
+            if (matr[v] == -1 || dfs(matr[v])) {
+                matr[v] = u;
+                matl[u] = v;
                 return true;
             }
         }
@@ -26,19 +26,19 @@ struct Hungarian {
     }
 
     int work() {
-        int result = 0;
+        int res = 0;
         for (int i = n; i >= 1; i--) {
             time++;
-            if (dfs(i)) result++;
+            if (dfs(i)) { res++; }
         }
-        return result;
+        return res;
     }
 
-    std::vector<std::pair<int, int>> edges() const {
-        std::vector<std::pair<int, int>> result;
+    std::vector<std::pair<int, int>> eds() const {
+        std::vector<std::pair<int, int>> res;
         for (int i = 1; i <= n; i++) {
-            if (matchl[i] != -1) result.emplace_back(i, matchl[i]);
+            if (matl[i] != -1) { res.emplace_back(i, matl[i]); }
         }
-        return result;
+        return res;
     }
 };
