@@ -362,7 +362,26 @@ auto gauss(std::vector<std::vector<T>> function);
 
 浮点判零使用全局常量 `EPS = 1e-8`。
 
-### 6.2 Montgomery 模整数
+### 6.2 素数判定与整数分解
+
+头文件：`CP/math/prime.hpp`
+
+```cpp
+bool MillerRabin(u64 n);
+u64 PollardRho(u64 n);
+std::vector<u64> factorize(u64 n);
+```
+
+`MillerRabin(n)` 对完整 `u64` 范围进行确定性素数判定。`PollardRho(n)` 对合数返回一个非平凡因子，对素数返回自身。`factorize(n)` 返回带重数且从小到大排列的全部质因子；`n <= 1` 时返回空数组。
+
+```cpp
+auto factors = factorize(360);
+// factors = {2, 2, 2, 3, 3, 5}
+```
+
+模乘使用 `u128`，Pollard--Rho 使用 Brent 循环与批量 `gcd`。
+
+### 6.3 Montgomery 模整数
 
 头文件：`CP/math/modint.hpp`
 
@@ -450,7 +469,7 @@ M x = value;
 
 同一个 `DynModInt<P>` 类型共享模数状态。
 
-### 6.3 FFT
+### 6.4 FFT
 
 头文件：`CP/math/fft.hpp`
 
@@ -482,7 +501,7 @@ std::vector<i64> mul(std::vector<Cp> &a, std::vector<Cp> &b);
 
 返回长度为 `a.size() + b.size() - 1` 的整数卷积。函数会扩充并修改 `a`、`b`。结果使用 `llround` 四舍五入，适用于卷积结果没有超出浮点精度范围的情况；大系数应拆系数或使用 NTT。
 
-### 6.4 多项式
+### 6.5 多项式
 
 头文件：`CP/math/poly.hpp`
 
@@ -544,7 +563,7 @@ std::vector<Z> eval(std::vector<Z> points) const;
 - `sqrt(size)` 当前要求常数项为 `1`，返回常数项为 `1` 的平方根。
 - `eval(points)` 返回多项式在各点的值。
 
-### 6.5 ModComb
+### 6.6 ModComb
 
 头文件：`CP/math/modcomb.hpp`
 
@@ -584,7 +603,7 @@ Z binom(int n, int m);
 
 如果调用 `Z::setMod` 改变模数，原缓存立即失效，继续查询前必须调用 `reset()`。
 
-### 6.6 Matrix
+### 6.7 Matrix
 
 头文件：`CP/math/matrix.hpp`
 
@@ -1476,6 +1495,7 @@ for (int position : suffixArray.sa) {
 | `basic` | `io` |
 | `fastio` | `IOS` |
 | `math_base` | `power`, `Floor`, `Ceil`, `exgcd`, `excrt`, `gauss` 等 |
+| `prime` | `MillerRabin`, `PollardRho`, `factorize` |
 | `modint` | `Z`, `DynModInt`, `Montgomery`, `power` |
 | `modcomb` | `Comb`, `comb` |
 | `fft` | `Cp`, `FFT` |

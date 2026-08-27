@@ -4,6 +4,7 @@
 #include "CP/basic.hpp"
 #include "CP/fastio.hpp"
 #include "CP/math/base.hpp"
+#include "CP/math/prime.hpp"
 #include "CP/math/modint.hpp"
 #include "CP/math/modcomb.hpp"
 #include "CP/math/fft.hpp"

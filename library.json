@@ -22,6 +22,11 @@
       "symbols": ["power", "Floor", "Ceil", "exgcd", "exgcdFunction", "excrt", "gauss"],
       "depends": ["types"]
     },
+    "prime": {
+      "header": "include/CP/math/prime.hpp",
+      "symbols": ["MillerRabin", "PollardRho", "factorize"],
+      "depends": ["types"]
+    },
     "modint": {
       "header": "include/CP/math/modint.hpp",
       "symbols": ["Z", "DynModInt", "Montgomery", "power"],
