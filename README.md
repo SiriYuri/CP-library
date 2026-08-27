@@ -201,11 +201,11 @@ python D:\Vscode_CPP\.cpp_system\CP\tools\bundle.py cpp.cpp -o submission.cpp --
 
 | 名称 | 类型 |
 |---|---|
-| `i32` | `std::int32_t` |
-| `i64` | `std::int64_t` |
+| `i32` | `int` |
+| `i64` | `long long` |
 | `i128` | `__int128_t` |
-| `u32` | `std::uint32_t` |
-| `u64` | `std::uint64_t` |
+| `u32` | `unsigned int` |
+| `u64` | `unsigned long long` |
 | `u128` | `__uint128_t` |
 | `f32` | `double` |
 | `f64` | `long double` |
