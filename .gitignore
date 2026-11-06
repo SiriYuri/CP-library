@@ -1,5 +1,18 @@
-build/
-submission.cpp
-*.exe
-__pycache__/
+# Local editor and compiler caches
+/ipch/
+**/__pycache__/
+*.pyc
 
+# Generated executables and build files
+*.exe
+*.bin
+*.ipch
+build/
+dist/
+*.spec
+.compilecpp-*/
+.compilepy-*/
+.output_cph/
+.output_exe/
+submission.cpp
+CP-submission.cpp

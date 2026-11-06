@@ -7,11 +7,6 @@
       "symbols": ["i32", "i64", "u32", "u64", "i128", "u128", "f32", "f64", "EPS", "inf"],
       "depends": []
     },
-    "basic": {
-      "header": "include/CP/basic.hpp",
-      "symbols": ["io"],
-      "depends": []
-    },
     "fastio": {
       "header": "include/CP/fastio.hpp",
       "symbols": ["IOS"],
@@ -22,20 +17,10 @@
       "symbols": ["power", "floor", "ceil"],
       "depends": ["types"]
     },
-    "number_theory": {
-      "header": "include/CP/math/numbertheory.hpp",
-      "symbols": ["exgcd", "exgcdFunction", "excrt"],
-      "depends": ["math_base"]
-    },
-    "gauss": {
-      "header": "include/CP/math/gauss.hpp",
-      "symbols": ["gauss"],
-      "depends": ["types"]
-    },
-    "bsgs": {
-      "header": "include/CP/math/bsgs.hpp",
-      "symbols": ["exbsgs"],
-      "depends": ["math_base"]
+    "sieve": {
+      "header": "include/CP/math/sieve.hpp",
+      "symbols": ["sieve", "minp", "primes"],
+      "depends": []
     },
     "prime": {
       "header": "include/CP/math/prime.hpp",
@@ -72,11 +57,6 @@
       "symbols": ["DSU"],
       "depends": []
     },
-    "dynheap": {
-      "header": "include/CP/ds/dynheap.hpp",
-      "symbols": ["DynHeap"],
-      "depends": []
-    },
     "fenwick": {
       "header": "include/CP/ds/fenwick.hpp",
       "symbols": ["Fenwick"],
@@ -90,6 +70,16 @@
     "sparsetable": {
       "header": "include/CP/ds/sparsetable.hpp",
       "symbols": ["SparseTable"],
+      "depends": []
+    },
+    "kmp": {
+      "header": "include/CP/string/kmp.hpp",
+      "symbols": ["kmp"],
+      "depends": []
+    },
+    "manacher": {
+      "header": "include/CP/string/manacher.hpp",
+      "symbols": ["manacher"],
       "depends": []
     },
     "suffixarray": {
@@ -107,29 +97,9 @@
       "symbols": ["MinCostFlow"],
       "depends": []
     },
-    "stoerwagner": {
-      "header": "include/CP/flow/stoerwagner.hpp",
-      "symbols": ["StoerWagner"],
-      "depends": ["types"]
-    },
-    "gomoryhutree": {
-      "header": "include/CP/flow/gomoryhutree.hpp",
-      "symbols": ["GomoryHuTree"],
-      "depends": ["maxflow"]
-    },
     "twosat": {
       "header": "include/CP/graph/twosat.hpp",
       "symbols": ["TwoSat"],
-      "depends": []
-    },
-    "bipartite": {
-      "header": "include/CP/graph/bipartite.hpp",
-      "symbols": ["HopcroftKarp", "KM"],
-      "depends": ["types"]
-    },
-    "hungarian": {
-      "header": "include/CP/graph/hungarian.hpp",
-      "symbols": ["Hungarian"],
       "depends": []
     },
     "scc": {
@@ -146,21 +116,6 @@
       "header": "include/CP/graph/vcc.hpp",
       "symbols": ["VCC"],
       "depends": []
-    },
-    "blossomtree": {
-      "header": "include/CP/graph/blossomtree.hpp",
-      "symbols": ["BlossomTree"],
-      "depends": ["types"]
-    },
-    "blockcuttree": {
-      "header": "include/CP/graph/blockcuttree.hpp",
-      "symbols": ["BlockCutTree"],
-      "depends": []
-    },
-    "segtgraph": {
-      "header": "include/CP/graph/segtgraph.hpp",
-      "symbols": ["SegtGraph"],
-      "depends": ["types"]
     },
     "geometry_base": {
       "header": "include/CP/geometry/base.hpp",
